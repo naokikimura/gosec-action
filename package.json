@@ -1,6 +1,6 @@
 {
   "name": "@naokikimura/code-review-action-gosec-plugin",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Analyze code statically using gosec in Github actions",
   "main": "dist/main/index.js",
   "scripts": {
