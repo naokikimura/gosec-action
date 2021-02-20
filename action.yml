@@ -1,0 +1,33 @@
+---
+name: Code review using gosec
+author: Naoki Kimura
+description: Analyze code statically using gosec in Github actions
+inputs:
+  files:
+    description: |
+      Specify directories
+
+      (Multiple directories can be specified by separating them with line feed)
+    required: false
+  options:
+    description: |
+      Changes `gosec` command line options.
+
+      Specify the options in JSON array format.
+      e.g.: '["-conf", ".gosecrc.json"]'
+    required: false
+  working_directory:
+    description: Changes the current working directory of the Node.js process
+    required: false
+  reporter_type_notation:
+    description: |
+      Change the reporter.
+
+      (Multiple can be specified separated by commas)
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/action/index.js'
+branding:
+  icon: 'search'
+  color: 'orange'

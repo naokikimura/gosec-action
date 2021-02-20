@@ -1,0 +1,52 @@
+{
+  "name": "@naokikimura/code-review-action-gosec-plugin",
+  "version": "0.0.0",
+  "description": "Analyze code statically using gosec in Github actions",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "test": "gulp test",
+    "prepare": "gulp clean build",
+    "version": "gulp clean build && git add dist/action",
+    "postversion": "gulp postversion",
+    "start": "node dist/action/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naokikimura/gosec-action.git"
+  },
+  "keywords": [
+    "github",
+    "actions",
+    "gosec"
+  ],
+  "author": "Naoki Kimura",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/naokikimura/gosec-action/issues"
+  },
+  "homepage": "https://github.com/naokikimura/gosec-action#readme",
+  "dependencies": {
+    "@moneyforward/code-review-action": "^0.2.0",
+    "@moneyforward/command": "^0.2.2",
+    "@moneyforward/sca-action-core": "^0.2.4",
+    "@moneyforward/stream-util": "^0.1.4"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.13.9",
+    "@typescript-eslint/eslint-plugin": "^3.1.0",
+    "@typescript-eslint/parser": "^3.1.0",
+    "@zeit/ncc": "^0.22.3",
+    "chai": "^4.2.0",
+    "del": "^5.1.0",
+    "eslint": "^7.1.0",
+    "gulp": "^4.0.2",
+    "mocha": "^7.2.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.3"
+  }
+}
