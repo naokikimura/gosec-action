@@ -13,7 +13,7 @@ const debug = util.debuglog('@naokikimura/code-review-action-gosec-plugin');
 
 export default abstract class Analyzer extends StaticCodeAnalyzer {
   constructor(...args: AnalyzerConstructorParameter[]) {
-    super('gosec', args.map(String).concat('-fmt', 'golint'));
+    super('gosec', args.map(String).concat('-no-fail', '-fmt', 'golint'));
   }
 
   protected async prepare(): Promise<void> {
