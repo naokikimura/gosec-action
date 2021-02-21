@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import path from 'path';
 import stream from 'stream';
 import util from 'util';
@@ -20,15 +20,24 @@ export default abstract class Analyzer extends StaticCodeAnalyzer {
     console.log('::group::Installing packages...');
     try {
       const gopath = await Command.substitute('go', ['env', 'GOPATH']);
-      await new Promise<void>((resolve, reject) => {
-        const curl = spawn('curl', ['-sSfL', 'https://raw.githubusercontent.com/securego/gosec/master/install.sh'], { stdio: 'pipe' })
-          .on('exit', (code, signal) => { if (code != 0) reject([code, signal]); });
-        curl.stderr.pipe(process.stderr);
-        const sh = spawn('sh', ['-s', '--', '-b', `${gopath}/bin`], { stdio: [curl.stdout, 'pipe'] })
-          .on('exit', (code, signal) => { if (code != 0) reject([code, signal]); resolve(); });
-        sh.stdout?.pipe(process.stdout);
-        sh.stderr?.pipe(process.stderr);
-      });
+      await function pipeline(...subprocesses: ChildProcessWithoutNullStreams[]) {
+        return new Promise<void>((resolve, reject) => {
+          const subprocess = subprocesses
+            .map(subprocess => {
+              subprocess.stderr.pipe(process.stderr);
+              subprocess.once('exit', (code, signal) => { if (code !== 0) reject([subprocess.spawnfile, code, signal]); });
+              return subprocess;
+            })
+            .reduce((previous, current) => {
+              previous.stdout.pipe(current.stdin);
+              return current;
+            }).once('exit', code => { if (code === 0) resolve(); });
+          subprocess.stdout.pipe(process.stdout);
+        })
+      }(
+        spawn('curl', ['-sSfL', 'https://raw.githubusercontent.com/securego/gosec/master/install.sh']),
+        spawn('sh', ['-s', '--', '-b', path.join(gopath, 'bin')])
+      );
       process.env['PATH'] = [path.join(gopath, 'bin'), process.env.PATH].join(path.delimiter);
       debug('%s', process.env.PATH);
     } finally {
